@@ -9,10 +9,7 @@ class ISELController:
 	#written for imc-p3-1
 	def __init__(self, comPort):
 		self.comPort = comPort
-		try:
-			self.port = serial.Serial(comPort,19200)
-		else:
-			self.port = None
+		self.port = serial.Serial(comPort,19200)
 		self.x = 0
 		self.y = 0
 		self.z = 0
@@ -26,13 +23,13 @@ class ISELController:
 		return self.intialize()
 
 	def initialize(self):
-		self.send_command("@07") #Section 2.2.1
+		self.send_command("@01") #Section 2.2.1
 		self.write_mem_def()
 		self.reference()
 		
 	def reference(self):
 		#runs motors back to limit switch
-		self.send_command("@0R7") #section 2.2.22
+		self.send_command("@0R1") #section 2.2.22
 		self.x = 0
 		self.y = 0
 		self.z = 0
@@ -102,6 +99,6 @@ class ISELController:
 	#	self.send_command("@0ID7")
 
 def setup():
-	a = ISELController("/dev/tty.PL2303-00002006")
+	a = ISELController("/dev/ttyS0")
 	a.initialize()
 	return a

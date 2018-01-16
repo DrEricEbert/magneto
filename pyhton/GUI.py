@@ -101,7 +101,7 @@ class CNCControl:
 		self.sideBarFrame.grid(row = 0, column = 1)
 		
 		# initial port setup
-		self.entryPort.insert(0, "/dev/tty.PL2303-00002006")
+		self.entryPort.insert(0, "/dev/ttyS1")
 		
 	def draw(self):
 		#all coords are flipped
@@ -165,7 +165,7 @@ class CNCControl:
 				tim = self.scope.get_time_info(i)
 				f = open("./output/f_%i_c_%i.csv" % (f, i+1))
 				for k in range(len(ch[i])):
-					f.write("%f,%f\n" % (i*tim,ch[i][k])
+					f.write("%f,%f\n" % (i*tim,ch[i][k]))
 				f.close()
 			f = f + (20000-100)/20
 		
