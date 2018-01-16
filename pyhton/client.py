@@ -25,6 +25,8 @@ time.sleep(1)
 
 for cnt in range(1,10):
 	mySocket.sendto(moveMessage.encode('utf-8'),(SERVER_IP,PORT_NUMBER))
-	time.sleep(5)
+	time.sleep(10)
+
+mySocket.sendto(refMessage.encode('utf-8'),(SERVER_IP,PORT_NUMBER))
 
 sys.exit()
