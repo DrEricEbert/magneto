@@ -14,6 +14,9 @@ import time
 PORT_NUMBER = 5000
 SIZE = 1024
 
+portAchse = serial.Serial("/dev/ttyS0",19200)
+portObjektiv = serial.Serial("/dev/ttyACM0",115200)
+
 hostName = gethostbyname( '0.0.0.0' )
 
 mySocket = socket( AF_INET, SOCK_DGRAM )
@@ -53,7 +56,7 @@ def mmMove(value_mm):
     return str(steps)
 
     
-port = serial.Serial("/dev/ttyS0",19200)
+
 
 #sendCommand(port,"@01") #select x-Axis only
 #sendCommand(port,"@0d5000") #set reference speed
@@ -66,9 +69,13 @@ while True:
     print data
     mylist = data.split(" ")
     if mylist[0] == "ref":
-        sendCommand(port,"@01") #select x-Axis only
-        sendCommand(port,"@0d5000") #set reference speed
-        sendCommand(port,"@0R1") #home x-Axis
+        sendCommand(portAchse,"@01") #select x-Axis only
+        sendCommand(portAchse,"@0d5000") #set reference speed
+        sendCommand(portAchse,"@0R1") #home x-Axis
     if mylist[0] == "mov_rel":
-        sendCommand(port,"@0A "+mmMove(int(mylist[1]))+",5000")#move axis 50mm steps with speed 5000   
+        sendCommand(portAchse,"@0A "+mmMove(int(mylist[1]))+",5000")#move axis 50mm steps with speed 5000   
+    if mylist[0] == "obj_pos":
+       portObjektiv.write("softreset\n")
+       time.sleep(0.2)
+       portObjektiv.write("setposition "+str(mylist[1])+"\n")
 sys.exit()
