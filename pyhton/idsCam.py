@@ -1,7 +1,23 @@
+import os
 import ctypes
 from pyueye import ueye
 from threading import Thread
 from ctypes import byref
+
+from PyQt5 import QtCore
+from PyQt5 import QtGui
+from PyQt5.QtWidgets import QGraphicsScene, QApplication
+from PyQt5.QtWidgets import QGraphicsView
+from PyQt5.QtWidgets import QHBoxLayout, QVBoxLayout, QSlider, QWidget
+
+
+import cv2
+import numpy as np
+import time
+
+
+global resultDirectoryName
+resultDirectoryName =  "./result"+ time.strftime("%Y%m%d%H%M%S") +"/"
 
 def get_bits_per_pixel(color_mode):
     """
@@ -501,16 +517,7 @@ class Camera:
             mode:   predefined trigger mode (see ueye manual)
         """
         check(ueye.is_SetExternalTrigger(self.handle(), mode))
-		
-
-from PyQt5 import QtCore
-from PyQt5 import QtGui
-from PyQt5.QtWidgets import QGraphicsScene, QApplication
-from PyQt5.QtWidgets import QGraphicsView
-from PyQt5.QtWidgets import QHBoxLayout, QVBoxLayout, QSlider, QWidget
-
-from pyueye import ueye
-
+        
 
 def get_qt_format(ueye_color_format):
     return { ueye.IS_CM_SENSOR_RAW8: QtGui.QImage.Format_Mono,
@@ -525,7 +532,6 @@ def get_qt_format(ueye_color_format):
 class PyuEyeQtView(QWidget):
 
     update_signal = QtCore.pyqtSignal(QtGui.QImage, name="update_signal")
-
     def __init__(self, parent=None):
         super(self.__class__, self).__init__(parent)
 
@@ -563,7 +569,7 @@ class PyuEyeQtView(QWidget):
     def update_image(self, image):
         self.scene.update()
 
-    def user_callback(self, image_data):
+    def user_callback(self, image_data, directory_name):
         return image_data.as_cv_image()
 
     def handle(self, image_data):
@@ -589,11 +595,7 @@ class PyuEyeQtApp:
         self.qt_app.exec_()
 
     def exit_connect(self, method):
-        self.qt_app.aboutToQuit.connect(method)		
-
-
-import cv2
-import numpy as np
+        self.qt_app.aboutToQuit.connect(method)
 
 def process_image(self, image_data):
 
@@ -601,20 +603,29 @@ def process_image(self, image_data):
     image = image_data.as_1d_image()    
     # make a gray image
     image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    # make a color image again to mark the circles in green
     image = cv2.cvtColor(image, cv2.COLOR_GRAY2BGR)
-    
     # show the image with Qt
+    timestr = time.strftime("%Y%m%d%H%M%S")
+    cv2.imwrite(resultDirectoryName+"/"+timestr+".png", image)
     return QtGui.QImage(image.data,
                         image_data.mem_info.width,
                         image_data.mem_info.height,
                         QtGui.QImage.Format_RGB888)
+
+def ensure_dir(file_path):
+    directory = os.path.dirname(file_path)
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+		
 # we need a QApplication, that runs our QT Gui Framework    
 app = PyuEyeQtApp()
 # a basic qt window
 view = PyuEyeQtView()
 view.show()
 view.user_callback = process_image
+
+ensure_dir(resultDirectoryName)
+
 # camera class to simplify uEye API access
 cam = Camera()
 cam.init()

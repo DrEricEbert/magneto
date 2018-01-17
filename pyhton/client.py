@@ -17,16 +17,20 @@ print ("Test client sending packets to IP {0}, via port {1}\n".format(SERVER_IP,
 
 mySocket = socket( AF_INET, SOCK_DGRAM )
 refMessage = "ref"
-
 moveMessage = "mov_rel 100"
+objMessage = "obj_pos 21000"
 
-mySocket.sendto(refMessage.encode('utf-8'),(SERVER_IP,PORT_NUMBER))
-time.sleep(1)
+#mySocket.sendto(refMessage.encode('utf-8'),(SERVER_IP,PORT_NUMBER))
+#time.sleep(10)
 
-for cnt in range(1,10):
-	mySocket.sendto(moveMessage.encode('utf-8'),(SERVER_IP,PORT_NUMBER))
-	time.sleep(10)
+for cnt in range(1,100):
+	position = 18000+cnt*300
+	objMessage = "obj_pos "+str(position)
+	print("Position: "+str(position)+"\r\n");
+	mySocket.sendto(objMessage.encode('utf-8'),(SERVER_IP,PORT_NUMBER))
+	#mySocket.sendto(moveMessage.encode('utf-8'),(SERVER_IP,PORT_NUMBER))
+	time.sleep(.3)
 
-mySocket.sendto(refMessage.encode('utf-8'),(SERVER_IP,PORT_NUMBER))
+#mySocket.sendto(refMessage.encode('utf-8'),(SERVER_IP,PORT_NUMBER))
 
 sys.exit()
