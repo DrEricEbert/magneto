@@ -17,20 +17,32 @@ print ("Test client sending packets to IP {0}, via port {1}\n".format(SERVER_IP,
 
 mySocket = socket( AF_INET, SOCK_DGRAM )
 refMessage = "ref"
-moveMessage = "mov_rel 100"
-objMessage = "obj_pos 21000"
+moveMessage = "mov_rel 400"
+objMessage = "obj_pos 32100"
 
-#mySocket.sendto(refMessage.encode('utf-8'),(SERVER_IP,PORT_NUMBER))
-#time.sleep(10)
-
-for cnt in range(1,100):
-	position = 18000+cnt*300
+def objectivePosition(position):
 	objMessage = "obj_pos "+str(position)
 	print("Position: "+str(position)+"\r\n");
 	mySocket.sendto(objMessage.encode('utf-8'),(SERVER_IP,PORT_NUMBER))
-	#mySocket.sendto(moveMessage.encode('utf-8'),(SERVER_IP,PORT_NUMBER))
-	time.sleep(.3)
+	time.sleep(1)
+#mySocket.sendto(refMessage.encode('utf-8'),(SERVER_IP,PORT_NUMBER))
+#time.sleep(10)
+#Socket.sendto(moveMessage.encode('utf-8'),(SERVER_IP,PORT_NUMBER))
+
+#mySocket.sendto(objMessage.encode('utf-8'),(SERVER_IP,PORT_NUMBER))
+
+#for cnt in range(1,100):
+#	position = 18000+cnt*300
+#	objMessage = "obj_pos "+str(position)
+#	print("Position: "+str(position)+"\r\n");
+#	mySocket.sendto(objMessage.encode('utf-8'),(SERVER_IP,PORT_NUMBER))
+#	#mySocket.sendto(moveMessage.encode('utf-8'),(SERVER_IP,PORT_NUMBER))
+#	time.sleep(.3)
 
 #mySocket.sendto(refMessage.encode('utf-8'),(SERVER_IP,PORT_NUMBER))
+
+for cnt in range(1,20):
+	position = 18000+1000*cnt
+	objectivePosition(position)
 
 sys.exit()
