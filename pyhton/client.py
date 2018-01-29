@@ -16,15 +16,34 @@ SIZE = 1024
 print ("Test client sending packets to IP {0}, via port {1}\n".format(SERVER_IP, PORT_NUMBER))
 
 mySocket = socket( AF_INET, SOCK_DGRAM )
-refMessage = "ref"
-moveMessage = "mov_rel 400"
-objMessage = "obj_pos 32100"
+
+
 
 def objectivePosition(position):
 	objMessage = "obj_pos "+str(position)
 	print("Position: "+str(position)+"\r\n");
 	mySocket.sendto(objMessage.encode('utf-8'),(SERVER_IP,PORT_NUMBER))
 	time.sleep(1)
+
+def stageReference():
+	refMessage = "ref"
+	mySocket.sendto(refMessage.encode('utf-8'),(SERVER_IP,PORT_NUMBER))
+	time.sleep(10)
+	
+def stagePosition(position):
+	moveMessage = "mov_rel "+str(position)
+	print("Position: "+str(position)+"\r\n");
+	mySocket.sendto(objMessage.encode('utf-8'),(SERVER_IP,PORT_NUMBER))
+	time.sleep(1)
+
+#Check Objective position range
+#for cnt in range(1,20):
+#	position = 18000+1000*cnt
+#	objectivePosition(position)
+
+objectivePosition(25000)	
+
+
 #mySocket.sendto(refMessage.encode('utf-8'),(SERVER_IP,PORT_NUMBER))
 #time.sleep(10)
 #Socket.sendto(moveMessage.encode('utf-8'),(SERVER_IP,PORT_NUMBER))
@@ -41,8 +60,5 @@ def objectivePosition(position):
 
 #mySocket.sendto(refMessage.encode('utf-8'),(SERVER_IP,PORT_NUMBER))
 
-for cnt in range(1,20):
-	position = 18000+1000*cnt
-	objectivePosition(position)
 
 sys.exit()
