@@ -51,10 +51,6 @@ def sendCommand(port, command):
 			return c
 		else:
 			return "P" #no port message (custom)
-def mmMove(value_mm):
-    steps = value_mm/0.00625
-    return str(steps)
-
     
 
 
@@ -73,7 +69,9 @@ while True:
         sendCommand(portAchse,"@0d5000") #set reference speed
         sendCommand(portAchse,"@0R1") #home x-Axis
     if mylist[0] == "mov_rel":
-        sendCommand(portAchse,"@0A "+mmMove(int(mylist[1]))+",5000")#move axis 50mm steps with speed 5000   
+        sendCommand(portAchse,"@0A "+mylist[1]+",5000")#move axis 50mm steps with speed 5000   
+    if mylist[0] == "mov_abs":
+        sendCommand(portAchse,"@0M "+mylist[1]+",5000")#move axis 50mm steps with speed 5000   
     if mylist[0] == "obj_pos":
        portObjektiv.write("softreset\n")
        time.sleep(0.2)
